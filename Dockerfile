@@ -78,7 +78,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt \
+    pip install -r requirements.txt
 
 RUN mkdir /root/.jupyter
 RUN jupyter notebook --generate-config
