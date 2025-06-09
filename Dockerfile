@@ -2,24 +2,31 @@ FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_PREFER_BINARY=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PYTHON_VERSION=3.12.3
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /
 
+# Установка Python 3.12 и системных зависимостей
 RUN apt update && \
     apt upgrade -y && \
     apt install -y \
-      python3-dev \
-      python3-pip \
-      fonts-dejavu-core \
-      rsync \
-      git \
-      jq \
-      moreutils \
-      aria2 \
       wget \
-      curl \
+      git \
+      mc \
+      build-essential \
+      libssl-dev \
+      zlib1g-dev \
+      libbz2-dev \
+      libreadline-dev \
+      libsqlite3-dev \
+      libncursesw5-dev \
+      tk-dev \
+      libxml2-dev \
+      libxmlsec1-dev \
+      libffi-dev \
+      liblzma-dev \
       libglib2.0-0 \
       libsm6 \
       libgl1 \
@@ -29,66 +36,82 @@ RUN apt update && \
       libgoogle-perftools4 \
       libtcmalloc-minimal4 \
       procps \
-      python3-opencv \
-      build-essential \
-      python3-venv \
       nvidia-cuda-toolkit && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean -y
 
+# Компиляция Python 3.12
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz && \
+    tar -xf Python-${PYTHON_VERSION}.tar.xz && \
+    cd Python-${PYTHON_VERSION} && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && \
+    rm -rf Python-${PYTHON_VERSION} Python-${PYTHON_VERSION}.tar.xz
 
-RUN ln -s /usr/bin/python3.10 /usr/bin/python
+# Создаем симлинк python3.12 -> python
+RUN ln -fs /usr/local/bin/python3.12 /usr/local/bin/python && \
+    ln -fs /usr/local/bin/python3.12 /usr/local/bin/python3 && \
+    ln -fs /usr/local/bin/pip3.12 /usr/local/bin/pip
 
-RUN pip install --no-cache-dir git+https://github.com/huggingface/accelerate
-
+# Установка torch для CUDA 12.1 с Python 3.12
 RUN pip install --no-cache-dir \
     torch==2.2.2 \
     torchvision==0.17.2 \
     torchaudio==2.2.2 \
-    --extra-index-url https://download.pytorch.org/whl/cu121
+    --index-url https://download.pytorch.org/whl/cu121
 
+# Базовые зависимости
 RUN pip install --no-cache-dir \
-    opencv-python-headless==4.8.1.78 \
-    pillow \
-    transformers \
-    safetensors \
-    aiohttp \
-    numpy \
-    color-matcher
+    opencv-python-headless==4.9.0.80 \
+    pillow==10.3.0 \
+    transformers==4.41.0 \
+    safetensors==0.4.2 \
+    aiohttp==3.9.5 \
+    numpy==2.0.0 \
+    color-matcher==1.2.1 \
+    accelerate==0.30.1
 
+# Установка Jupyter
 RUN pip install --no-cache-dir \
-    jupyter \
-    jupyterlab \
-    notebook \
-    ipywidgets
+    jupyter==1.0.0 \
+    jupyterlab==4.1.6 \
+    notebook==7.1.3 \
+    ipywidgets==8.1.2
 
+# Установка ComfyUI
 WORKDIR /home
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git
 
 WORKDIR /home/ComfyUI
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
-WORKDIR /
+
+# Установка кастомных нод
 WORKDIR /home/ComfyUI/custom_nodes
-RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git
-RUN git clone https://github.com/kijai/ComfyUI-Hunyuan3DWrapper.git
+RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
+    git clone https://github.com/kijai/ComfyUI-Hunyuan3DWrapper.git
+
+# Установка зависимостей для нод
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Manager
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
-
-RUN mkdir /root/.jupyter
-RUN jupyter notebook --generate-config
-RUN echo "c.NotebookApp.password = ''" >> /root/.jupyter/jupyter_notebook_config.py
-RUN echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py
-RUN echo "c.NotebookApp.ip = '0.0.0.0'" >> /root/.jupyter/jupyter_notebook_config.py
-RUN echo "c.NotebookApp.notebook_dir = '/home/ComfyUI'" >> /root/.jupyter/jupyter_notebook_config.py
-
+# Настройка Jupyter
+RUN mkdir -p /root/.jupyter && \
+    jupyter notebook --generate-config && \
+    echo "c.NotebookApp.password = ''" >> /root/.jupyter/jupyter_notebook_config.py && \
+    echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py && \
+    echo "c.NotebookApp.ip = '0.0.0.0'" >> /root/.jupyter/jupyter_notebook_config.py && \
+    echo "c.NotebookApp.notebook_dir = '/home/ComfyUI'" >> /root/.jupyter/jupyter_notebook_config.py
 
 EXPOSE 8188 8888
 
 COPY startup.sh /home/startup.sh
 RUN chmod +x /home/startup.sh
+
+CMD ["/home/startup.sh"]
