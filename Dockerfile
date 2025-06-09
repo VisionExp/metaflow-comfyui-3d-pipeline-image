@@ -67,7 +67,9 @@ RUN pip install --no-cache-dir \
 RUN pip install --no-cache-dir \
     opencv-python-headless==4.9.0.80 \
     pillow==10.3.0 \
-    transformers==4.41.0 \
+    transformers==4.38.0 \
+    peft=0.8.0 \
+    diffusers==0.25.0 \
     safetensors==0.4.2 \
     aiohttp==3.9.5 \
     numpy==2.0.0 \
@@ -101,6 +103,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
+
+RUN mkdir -p /root/.config/Ultralytics && chmod 755 /root/.config/Ultralytics
 # Настройка Jupyter
 RUN mkdir -p /root/.jupyter && \
     jupyter notebook --generate-config && \
