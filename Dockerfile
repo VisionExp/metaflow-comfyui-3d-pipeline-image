@@ -68,7 +68,7 @@ RUN pip install --no-cache-dir \
     opencv-python-headless==4.9.0.80 \
     pillow==10.3.0 \
     transformers==4.38.0 \
-    peft=0.8.0 \
+    peft==0.8.0 \
     diffusers==0.25.0 \
     safetensors==0.4.2 \
     aiohttp==3.9.5 \
