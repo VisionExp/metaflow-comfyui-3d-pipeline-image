@@ -58,9 +58,9 @@ RUN ln -fs /usr/local/bin/python3.12 /usr/local/bin/python && \
 
 # Установка torch для CUDA 12.1 с Python 3.12
 RUN pip install --no-cache-dir \
-    torch==2.2.2 \
-    torchvision==0.17.2 \
-    torchaudio==2.2.2 \
+    torch==2.4.0 \
+    torchvision \
+    torchaudio \
     --index-url https://download.pytorch.org/whl/cu121
 
 # Базовые зависимости
@@ -72,7 +72,7 @@ RUN pip install --no-cache-dir \
     aiohttp==3.9.5 \
     numpy==2.0.0 \
     color-matcher==0.6.0 \
-    accelerate==0.30.1
+    accelerate==0.21.0
 
 # Установка Jupyter
 RUN pip install --no-cache-dir \
