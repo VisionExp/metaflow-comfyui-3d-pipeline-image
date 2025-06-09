@@ -71,7 +71,7 @@ RUN pip install --no-cache-dir \
     safetensors==0.4.2 \
     aiohttp==3.9.5 \
     numpy==2.0.0 \
-    color-matcher==1.2.1 \
+    color-matcher==0.6.0 \
     accelerate==0.30.1
 
 # Установка Jupyter
