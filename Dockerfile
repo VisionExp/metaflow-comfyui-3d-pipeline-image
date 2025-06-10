@@ -79,7 +79,7 @@ RUN pip install --no-cache-dir \
 # Установка Jupyter
 RUN pip install --no-cache-dir \
     jupyter==1.1.1 \
-    jupyterlab==4.3.1 \
+    jupyterlab==4.2.6 \
     notebook==7.2.2 \
     ipywidgets==8.1.5
 
