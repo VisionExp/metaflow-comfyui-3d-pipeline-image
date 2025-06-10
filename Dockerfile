@@ -58,7 +58,7 @@ RUN ln -fs /usr/local/bin/python3.12 /usr/local/bin/python && \
 
 # Установка torch для CUDA 12.1 с Python 3.12
 RUN pip install --no-cache-dir \
-    torch==2.4.0 \
+    torch==2.6.0 \
     torchvision \
     torchaudio \
     --index-url https://download.pytorch.org/whl/cu121
