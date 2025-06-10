@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:12.4.1-cudnn9-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_PREFER_BINARY=1 \
@@ -56,32 +56,32 @@ RUN ln -fs /usr/local/bin/python3.12 /usr/local/bin/python && \
     ln -fs /usr/local/bin/python3.12 /usr/local/bin/python3 && \
     ln -fs /usr/local/bin/pip3.12 /usr/local/bin/pip
 
-# Установка torch для CUDA 12.1 с Python 3.12
+# Установка torch для CUDA 12.4 с Python 3.12
 RUN pip install --no-cache-dir \
     torch==2.6.0 \
-    torchvision \
-    torchaudio \
-    --index-url https://download.pytorch.org/whl/cu121
+    torchvision==0.21.0 \
+    torchaudio==2.6.0 \
+    --index-url https://download.pytorch.org/whl/cu124
 
-# Базовые зависимости
+# Базовые зависимости (обновлены для совместимости с PyTorch 2.6.0)
 RUN pip install --no-cache-dir \
-    opencv-python-headless==4.9.0.80 \
-    pillow==10.3.0 \
-    transformers==4.38.0 \
-    peft==0.8.0 \
-    diffusers==0.25.0 \
-    safetensors==0.4.2 \
-    aiohttp==3.9.5 \
-    numpy==2.0.0 \
+    opencv-python-headless==4.10.0.84 \
+    pillow==10.4.0 \
+    transformers==4.46.0 \
+    peft==0.13.0 \
+    diffusers==0.31.0 \
+    safetensors==0.4.5 \
+    aiohttp==3.10.8 \
+    numpy==1.26.4 \
     color-matcher==0.6.0 \
-    accelerate==0.21.0
+    accelerate==1.1.0
 
 # Установка Jupyter
 RUN pip install --no-cache-dir \
-    jupyter==1.0.0 \
-    jupyterlab==4.1.6 \
-    notebook==7.1.3 \
-    ipywidgets==8.1.2
+    jupyter==1.1.1 \
+    jupyterlab==4.3.1 \
+    notebook==7.2.2 \
+    ipywidgets==8.1.5
 
 # Установка ComfyUI
 WORKDIR /home
