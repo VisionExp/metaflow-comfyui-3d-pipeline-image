@@ -100,7 +100,7 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Manager
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
-WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper
+WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper-Linux
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
 
