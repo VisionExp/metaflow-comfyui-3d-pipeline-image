@@ -94,7 +94,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Установка кастомных нод
 WORKDIR /home/ComfyUI/custom_nodes
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
-    git clone https://github.com/kijai/ComfyUI-Hunyuan3DWrapper.git
+    git clone https://github.com/VisionExp/ComfyUI-Hunyuan3DWrapper-Linux.git
 
 # Установка зависимостей для нод
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Manager
