@@ -117,7 +117,7 @@ EXPOSE 8188 8888
 
 COPY setup.sh /home/setup.sh
 RUN chmod +x /home/setup.sh
-CMD ["/home/setup.sh"]
+RUN /home/setup.sh
 
 COPY startup.sh /home/startup.sh
 RUN chmod +x /home/startup.sh

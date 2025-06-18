@@ -14,14 +14,14 @@ pip install *.whl
 repos=(
     "https://github.com/chrisgoringe/cg-use-everywhere.git cg-use-everywhere"
     "https://github.com/giriss/comfy-image-saver.git comfy-image-saver"
-    "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git comfyui-advanced-controlnet"
-    "https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git comfyUI-custom-scripts"
-    "https://github.com/kijai/ComfyUI-Florence2.git comfyui-florence2"
-    "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git comfyui-impact-pack"
-    "https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git comfyui-impact-subpack"
-    "https://github.com/kijai/ComfyUI-KJNodes.git comfyui-kjnodes"
-    "https://github.com/cubiq/ComfyUI_essentials.git comfyui_essentials"
-    "https://github.com/cubiq/ComfyUI_IPAdapter_plus.git comfyui_ipadapter_plus"
+    "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git ComfyUI-Advanced-ControlNet"
+    "https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git ComfyUI-Custom-Scripts"
+    "https://github.com/kijai/ComfyUI-Florence2.git ComfyUI-Florence2"
+    "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git ComfyUI-Impact-Pack"
+    "https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git ComfyUI-Impact-Subpack"
+    "https://github.com/kijai/ComfyUI-KJNodes.git ComfyUI-KJNodes"
+    "https://github.com/cubiq/ComfyUI_essentials.git ComfyUI_essentials"
+    "https://github.com/cubiq/ComfyUI_IPAdapter_plus.git ComfyUI_IPAdapter_plus"
 )
 
 for repo in "${repos[@]}"; do
@@ -30,8 +30,15 @@ for repo in "${repos[@]}"; do
 
     cd /home/ComfyUI/custom_nodes/ || exit
     git clone $url
-    cd /home/ComfyUI/custom_nodes/$dir || exit
-    pip install -r requirements.txt
+    
+    if ! cd "/home/ComfyUI/custom_nodes/$dir"; then
+        echo "Warning: Could not enter directory /home/ComfyUI/custom_nodes/$dir. Skipping dependency installation for this repo."
+        continue
+    fi
+
+    if [ -f "requirements.txt" ]; then
+        pip install -r requirements.txt
+    fi
 done
 
 echo "All Custom Nodes have been installed"
