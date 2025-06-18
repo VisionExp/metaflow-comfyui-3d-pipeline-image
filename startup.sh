@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start ComfyUI
-cd /home/ComfyUI || { echo "ComfyUI directory not found"; exit 1; }
+cd /home/ComfyUI/custom_nodes/ComfyUI-Manager || { echo "Directory ComfyUI-Manager not found"; exit 1; }
 nohup python main.py --listen 0.0.0.0 > /var/log/comfyui.log 2>&1 &
 echo "ComfyUI started on port 8188"
 
