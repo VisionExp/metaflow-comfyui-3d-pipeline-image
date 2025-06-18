@@ -104,9 +104,7 @@ WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper-Linux
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt \
 
-COPY setup.sh /home/setup.sh
-RUN chmod +x /home/setup.sh
-CMD ["/home/setup.sh"]
+
 
 RUN mkdir -p /root/.config/Ultralytics && chmod 755 /root/.config/Ultralytics
 # Настройка Jupyter
@@ -118,6 +116,10 @@ RUN mkdir -p /root/.jupyter && \
     echo "c.NotebookApp.notebook_dir = '/home/ComfyUI'" >> /root/.jupyter/jupyter_notebook_config.py
 
 EXPOSE 8188 8888
+
+COPY setup.sh /home/setup.sh
+RUN chmod +x /home/setup.sh
+CMD ["/home/setup.sh"]
 
 COPY startup.sh /home/startup.sh
 RUN chmod +x /home/startup.sh
