@@ -102,9 +102,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper-Linux
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt \
-
-
+    pip install -r requirements.txt
 
 RUN mkdir -p /root/.config/Ultralytics && chmod 755 /root/.config/Ultralytics
 # Настройка Jupyter
